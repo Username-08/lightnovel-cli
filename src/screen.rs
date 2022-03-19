@@ -14,8 +14,6 @@ pub struct Screen {
     curr_bot: i32,
     curr_top: i32,
     pub url: String,
-    // prev_url: String,
-    // next_url: String,
     path: String,
 }
 
@@ -28,12 +26,7 @@ impl Screen {
             maxy: -1,
             curr_bot: -1,
             curr_top: 0,
-            // url: String::from(
-            //     "https://readlightnovels.net/trash-of-the-counts-family/chapter-4-they-met-1.html",
-            // ),
             url: String::new(),
-            // prev_url: String::new(),
-            // next_url: String::new(),
             path,
         };
 
@@ -48,9 +41,7 @@ impl Screen {
         getmaxyx(stdscr(), &mut s.maxy, &mut s.maxx);
         s.maxy -= 2;
         s.curr_bot = s.maxy;
-        // s.get_doc().await?;
         s.draw_welcome_screen().await?;
-        // s.draw_init_screen().await?;
         endwin();
         Ok(s)
     }
@@ -61,6 +52,7 @@ impl Screen {
         curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
         clear();
+        keypad(stdscr(), true);
 
         self.draw();
 

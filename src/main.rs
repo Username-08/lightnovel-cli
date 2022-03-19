@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // create config directory if it doesnt exist
     let path = create_config_dir();
 
-    let screen = Screen::new(path).await?;
+    Screen::new(path).await?;
 
     Ok(())
 }
@@ -45,9 +45,4 @@ pub fn create_config_dir() -> String {
     };
 
     path
-}
-
-pub fn extract_name(url: &String) -> String {
-    let result = String::new();
-    result
 }
