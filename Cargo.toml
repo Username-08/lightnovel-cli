@@ -1,0 +1,15 @@
+[package]
+edition = "2021"
+name = "lightnovel-cli"
+version = "0.1.0"
+[dependencies]
+scraper = "0.12.0"
+ncurses = {git = "https://github.com/jeaye/ncurses-rs", features=["wide"]}
+
+[dependencies.reqwest]
+features = ["json"]
+version = "0.11"
+
+[dependencies.tokio]
+features = ["full"]
+version = "1"
