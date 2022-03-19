@@ -1,7 +1,8 @@
 <h1 align="center">LightNovel-CLI</h1>
-<h2>A simple program to read lightnovels in your terminal. It scrapes [[freewebnovel.com](https://freewebnovel.com)</h2>
+A simple program to read lightnovels in your terminal. It scrapes [freewebnovel](https://freewebnovel.com)
 
 https://user-images.githubusercontent.com/83852973/159120682-1d0bfcd3-d42f-4d4a-893a-122e4c9159e5.mp4
+
 
 
 
