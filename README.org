@@ -2,6 +2,8 @@
 
 
 A simple program to read lightnovels in your terminal. It scrapes [[https://freewebnovel.com][freewebnovel.com]]
+#+attr_html: :alt  :align left :class img
+[[file:./assets/output.gif][demo]]
 
 * Table Of Contents :toc:
 - [[#keybinds][Keybinds]]
