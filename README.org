@@ -1,13 +1,11 @@
-#+TITLE: README
+#+TITLE: LightNovel-CLI
 
 
-* LightNovel-CLI
 #+begin_center
 A simple program to read lightnovels in your terminal. It scrapes [[https://freewebnovel.com][freewebnovel.com]]
 #+end_center
 
 * Table Of Contents :toc:
-- [[#lightnovel-cli][LightNovel-CLI]]
 - [[#keybinds][Keybinds]]
 - [[#installation][Installation]]
   - [[#arch-linux][Arch Linux]]
