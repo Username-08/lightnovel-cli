@@ -28,6 +28,7 @@ https://user-images.githubusercontent.com/83852973/159120682-1d0bfcd3-d42f-4d4a-
 | q                | quit                    |
 | h or left_arrow  | go to previous chapter  |
 | l or right_arrow | go to next chapter      |
+| enter            | select option under cursor |
 
 # Installation
 
