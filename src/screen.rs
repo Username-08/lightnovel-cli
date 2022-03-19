@@ -349,7 +349,7 @@ impl Screen {
         loop {
             match ch {
                 113 => {
-                    endwin();
+                    clear();
                     break;
                 }
                 106 | 258 => {
@@ -387,6 +387,8 @@ impl Screen {
                 // s
                 115 => {
                     self.display_search_screen().await?;
+                    self.curr_bot = self.maxy;
+                    self.curr_top = 0;
                     (result, chapter_urls) = self.make_welcome_screen();
                     clear();
                     self.draw();
@@ -712,11 +714,11 @@ impl Screen {
                                 .to_string()
                                 .trim()
                                 .to_string();
-                        if content.len() as i32 >= self.maxx {
+                        if content.len() as i32 >= self.maxx - 3 {
                             let mut temp = content.clone();
                             temp = temp
                                 .chars()
-                                .take(self.maxx as usize - 9)
+                                .take(self.maxx as usize - 10)
                                 .collect();
                             temp.push_str("...");
                             content = temp;
@@ -771,7 +773,7 @@ impl Screen {
                         Some(c) => {
                             let mut content =
                                 c.value().attr("title").unwrap().to_string();
-                            if content.len() as i32 >= self.maxx {
+                            if content.len() as i32 >= self.maxx - 9 {
                                 let mut temp = content.clone();
                                 temp = temp
                                     .chars()
