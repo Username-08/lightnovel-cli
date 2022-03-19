@@ -183,6 +183,7 @@ impl Screen {
     pub fn add_padding(&self, x: String) -> Vec<String> {
         let mut vec: Vec<String> = Vec::new();
         let mut result = String::new();
+        // calculate padding
         let padding = self.maxx / 8;
         let line_len = self.maxx - padding - padding;
         result.push_str(" ".repeat(padding as usize).as_str());
@@ -230,7 +231,10 @@ impl Screen {
 
     pub async fn get_doc(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         let mut result: Vec<String> = Vec::new();
-        let resp = reqwest::get(&self.url).await?.text().await?;
+        let resp = match reqwest::get(&self.url).await {
+            Ok(x) => x.text().await?,
+            Err(_) => panic!("Connection refused!")
+        };
 
         let fragment = Html::parse_fragment(&resp);
 
@@ -245,7 +249,10 @@ impl Screen {
                 .to_string(),
             None => "".to_string(),
         };
-        result.push(title);
+        if title != "".to_string() {
+            result.push(title);
+
+        }
 
         let empty_vec: Vec<&str> = vec![];
         let selector = Selector::parse(r#"p"#).unwrap();
@@ -332,7 +339,6 @@ impl Screen {
         let (mut result, mut chapter_urls) = self.make_welcome_screen();
         let x = 2;
         let mut y = 3;
-        // curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
         self.draw();
         wmove(stdscr(), y, x);
@@ -745,7 +751,10 @@ impl Screen {
                 let params = [("searchkey", keyword.as_str())];
                 let client = reqwest::Client::new();
                 let resp =
-                    client.post(url).form(&params).send().await?.text().await?;
+                    match client.post(url).form(&params).send().await {
+                        Ok(x) => x.text().await?,
+                        Err(_) => panic!("connection refused!")
+                    };
                 let fragment = Html::parse_fragment(&resp);
 
                 // parse the document for data
@@ -828,7 +837,7 @@ impl Screen {
             None => {
                 let mut result = Vec::new();
                 result.push("\n".to_string());
-                result.push(" Search for LightNovel?\n".to_string());
+                result.push(" Search for LightNovels: \n".to_string());
                 result.push("\n".to_string());
                 result.push(" > ".to_string());
                 result.push("\n".to_string());

@@ -1,3 +1,53 @@
 #+TITLE: README
 
+
+#+begin_center
+* LightNovel-CLI
+A simple program to read lightnovels in your terminal. It scrapes [[https://freewebnovel.com][freewebnovel.com]]
+#+end_center
+
+* Table Of Contents :toc:
+- [[#lightnovel-cli][LightNovel-CLI]]
+- [[#keybinds][Keybinds]]
+- [[#installation][Installation]]
+  - [[#arch-linux][Arch Linux]]
+  - [[#linux][Linux]]
+- [[#uninstalling][Uninstalling]]
+
+* Keybinds
+| Bind             | Action                  |
+|------------------+-------------------------|
+| s                | search for a novel      |
+| j or down_arrow  | scroll down             |
+| d                | scroll down half a page |
+| k or up_arrow    | scroll up               |
+| u                | scroll up half a page   |
+| q                | quit                    |
+| h or left_arrow  | go to previous chapter  |
+| l or right_arrow | go to next chapter      |
+
 * Installation
+** Arch Linux
+#+begin_src shell
+yay -S lightnovel-cli
+#+end_src
+
+** Linux
+*** Dependencies
+Make sure you have these installed before compiling form source
+#+begin_src
+rust
+ncurses
+#+end_src
+
+*** Compiling
+#+begin_src shell
+git clone https://github.com/Username-08/lightnovel-cli.git
+cd lightnovel-cli
+cargo build
+#+end_src
+
+* Uninstalling
+#+begin_src
+yay -Rns lightnovel-cli-git
+#+end_src
