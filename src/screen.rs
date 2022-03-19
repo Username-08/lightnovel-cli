@@ -454,6 +454,7 @@ impl Screen {
 
         clear();
         noecho();
+        keypad(stdscr(), false);
         self.draw();
         wmove(stdscr(), y, x);
         wrefresh(stdscr());
@@ -501,6 +502,7 @@ impl Screen {
         y = 4;
         clear();
         noecho();
+        keypad(stdscr(), true);
         self.draw();
         wmove(stdscr(), 4, 2);
         wrefresh(stdscr());
@@ -584,6 +586,7 @@ impl Screen {
                     //     .unwrap();
                     clear();
                     noecho();
+                    keypad(stdscr(), false);
                     addstr("\n");
                     let prompt =
                         format!(" enter chapter [1 - {}]: ", max_chapter);
