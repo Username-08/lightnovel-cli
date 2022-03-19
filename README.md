@@ -34,7 +34,7 @@ https://user-images.githubusercontent.com/83852973/159120682-1d0bfcd3-d42f-4d4a-
 ## Arch Linux
 
 ```sh
-yay -S lightnovel-cli
+yay -S lightnovel-cli-git
 
 ```
 
