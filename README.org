@@ -1,8 +1,8 @@
 #+TITLE: README
 
 
-#+begin_center
 * LightNovel-CLI
+#+begin_center
 A simple program to read lightnovels in your terminal. It scrapes [[https://freewebnovel.com][freewebnovel.com]]
 #+end_center
 
@@ -34,7 +34,7 @@ yay -S lightnovel-cli
 
 ** Linux
 *** Dependencies
-Make sure you have these installed before compiling form source
+Make sure you have these installed before compiling from source
 #+begin_src
 rust
 ncurses
