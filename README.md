@@ -1,20 +1,20 @@
-#+TITLE: LightNovel-CLI
+<h1 align="center">LightNovel-CLI</h1>
+<h2>A simple program to read lightnovels in your terminal. It scrapes [[freewebnovel.com](https://freewebnovel.com)</h2>
 
+https://github.com/Username-08/lightnovel-cli/blob/main/assets/output.mp4
 
-A simple program to read lightnovels in your terminal. It scrapes [[https://freewebnovel.com][freewebnovel.com]]
-#+attr_html: :alt  :align left
-[[file:./assets/output.mp4]]
+# Table Of Contents :toc:
 
-* Table Of Contents :toc:
-- [[#keybinds][Keybinds]]
-- [[#installation][Installation]]
-  - [[#arch-linux][Arch Linux]]
-  - [[#linux][Linux]]
-- [[#uninstalling][Uninstalling]]
+- [Keybinds](#keybinds)
+- [Installation](#installation)
+  - [Arch Linux](#arch-linux)
+  - [Linux](#linux)
+- [Uninstalling](#uninstalling)
 
-* Keybinds
+# Keybinds
+
 | Bind             | Action                  |
-|------------------+-------------------------|
+| ---------------- | ----------------------- |
 | s                | search for a novel      |
 | j or down_arrow  | scroll down             |
 | d                | scroll down half a page |
@@ -24,28 +24,36 @@ A simple program to read lightnovels in your terminal. It scrapes [[https://free
 | h or left_arrow  | go to previous chapter  |
 | l or right_arrow | go to next chapter      |
 
-* Installation
-** Arch Linux
-#+begin_src shell
-yay -S lightnovel-cli
-#+end_src
+# Installation
 
-** Linux
-*** Dependencies
+## Arch Linux
+
+```sh
+yay -S lightnovel-cli
+
+```
+
+## Linux
+
+### Dependencies
+
 Make sure you have these installed before compiling from source
-#+begin_src
+
+```sh
 rust
 ncurses
-#+end_src
+```
 
-*** Compiling
-#+begin_src shell
+### Compiling
+
+```sh
 git clone https://github.com/Username-08/lightnovel-cli.git
 cd lightnovel-cli
 cargo build
-#+end_src
+```
 
-* Uninstalling
-#+begin_src
+# Uninstalling
+
+```sh
 yay -Rns lightnovel-cli-git
-#+end_src
+```
