@@ -33,13 +33,14 @@ impl Screen {
         setlocale(LcCategory::all, "");
         initscr();
         keypad(stdscr(), true);
+        use_default_colors();
         start_color();
-        init_pair(1, COLOR_GREEN, COLOR_BLACK);
+        init_pair(1, COLOR_GREEN, -1);
         noecho();
         raw();
         clear();
         getmaxyx(stdscr(), &mut s.maxy, &mut s.maxx);
-        s.maxy -= 2;
+        s.maxy -= 1;
         s.curr_bot = s.maxy;
         s.draw_welcome_screen().await?;
         endwin();
@@ -60,7 +61,10 @@ impl Screen {
 
         loop {
             if is_term_resized(self.maxy, self.maxx) {
+                let tempy = self.maxy;
                 getmaxyx(stdscr(), &mut self.maxy, &mut self.maxx);
+                self.maxy -= 1;
+                self.curr_bot += self.maxy - tempy;
                 self.parse_doc();
                 // wrefresh(stdscr());
                 clear();
@@ -233,7 +237,7 @@ impl Screen {
         let mut result: Vec<String> = Vec::new();
         let resp = match reqwest::get(&self.url).await {
             Ok(x) => x.text().await?,
-            Err(_) => panic!("Connection refused!")
+            Err(_) => panic!("Connection refused!"),
         };
 
         let fragment = Html::parse_fragment(&resp);
@@ -251,7 +255,6 @@ impl Screen {
         };
         if title != "".to_string() {
             result.push(title);
-
         }
 
         let empty_vec: Vec<&str> = vec![];
@@ -752,11 +755,10 @@ impl Screen {
                 // pass a post request to get a response containing results
                 let params = [("searchkey", keyword.as_str())];
                 let client = reqwest::Client::new();
-                let resp =
-                    match client.post(url).form(&params).send().await {
-                        Ok(x) => x.text().await?,
-                        Err(_) => panic!("connection refused!")
-                    };
+                let resp = match client.post(url).form(&params).send().await {
+                    Ok(x) => x.text().await?,
+                    Err(_) => panic!("connection refused!"),
+                };
                 let fragment = Html::parse_fragment(&resp);
 
                 // parse the document for data
