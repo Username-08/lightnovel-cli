@@ -2,6 +2,7 @@ mod screen;
 
 use screen::Screen;
 use std::env;
+use std::env::args;
 use std::fs;
 use std::path::Path;
 
@@ -10,7 +11,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // create config directory if it doesnt exist
     let path = create_config_dir();
 
-    Screen::new(path).await?;
+    let epub_path: String;
+    let args = args().collect::<Vec<_>>();
+    if args.len() > 1 {
+        epub_path = args[1].clone();
+        Screen::new(path, Some(epub_path)).await?;
+    } else {
+        Screen::new(path, None).await?;
+    }
 
     Ok(())
 }

@@ -1,3 +1,4 @@
+use epub::doc::EpubDoc;
 use scraper::{Html, Selector};
 use std::{
     fs::File,
@@ -15,10 +16,21 @@ pub struct Screen {
     curr_top: i32,
     pub url: String,
     path: String,
+    epub_doc: Option<EpubDoc<File>>,
 }
 
 impl Screen {
-    pub async fn new(path: String) -> Result<Self, Box<dyn std::error::Error>> {
+    pub async fn new(
+        path: String,
+        epub_path: Option<String>,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        let epub_doc: Option<EpubDoc<File>>;
+        match epub_path {
+            Some(file_path) => {
+                epub_doc = Some(EpubDoc::new(file_path).unwrap());
+            }
+            None => epub_doc = None,
+        }
         let mut s = Self {
             raw_doc: vec![],
             doc: vec![],
@@ -28,6 +40,7 @@ impl Screen {
             curr_top: 0,
             url: String::new(),
             path,
+            epub_doc,
         };
 
         setlocale(LcCategory::all, "");
@@ -852,6 +865,25 @@ impl Screen {
                 self.doc = result;
                 Ok(None)
             }
+        }
+    }
+
+    fn change_epub_chapter(&mut self, offset: i32) -> bool {
+        match &mut self.epub_doc {
+            Some(doc) => {
+                if offset > 0 {
+                    match doc.go_next() {
+                        Ok(()) => return true,
+                        Err(_) => return false,
+                    }
+                } else {
+                    match doc.go_prev() {
+                        Ok(()) => return true,
+                        Err(_) => return false,
+                    }
+                }
+            }
+            None => return false,
         }
     }
 }
