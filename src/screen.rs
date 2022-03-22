@@ -55,7 +55,7 @@ impl Screen {
         clear();
         keypad(stdscr(), true);
 
-        self.draw();
+        self.draw(true);
 
         let mut ch = getch();
 
@@ -68,7 +68,7 @@ impl Screen {
                 self.parse_doc();
                 // wrefresh(stdscr());
                 clear();
-                self.draw();
+                self.draw(true);
             }
 
             match ch as u32 {
@@ -84,28 +84,28 @@ impl Screen {
                 106 | 258 => {
                     clear();
                     self.scroll(1);
-                    self.draw();
+                    self.draw(true);
                     ch = getch();
                 }
                 // d
                 100 => {
                     clear();
                     self.scroll(self.maxy / 2);
-                    self.draw();
+                    self.draw(true);
                     ch = getch();
                 }
                 // k or up_arrow
                 107 | 259 => {
                     clear();
                     self.scroll(-1);
-                    self.draw();
+                    self.draw(true);
                     ch = getch();
                 }
                 // u
                 117 => {
                     clear();
                     self.scroll(-(self.maxy / 2));
-                    self.draw();
+                    self.draw(true);
                     ch = getch();
                 }
                 // h or left_arrow
@@ -119,7 +119,7 @@ impl Screen {
                     // self.url = self.prev_url.clone();
                     self.change_chapter(-1);
                     self.get_doc().await?;
-                    self.draw();
+                    self.draw(true);
                     ch = getch();
                 }
                 // l or right_arrow
@@ -133,7 +133,7 @@ impl Screen {
                     // self.url = self.next_url.clone();
                     self.change_chapter(1);
                     self.get_doc().await?;
-                    self.draw();
+                    self.draw(true);
                     ch = getch();
                 }
                 _ => {
@@ -163,7 +163,7 @@ impl Screen {
         }
     }
 
-    pub fn draw(&mut self) {
+    pub fn draw(&mut self, show_completion: bool) {
         for (index, line) in (&self.doc).iter().enumerate() {
             if index < self.curr_top as usize {
                 continue;
@@ -172,6 +172,32 @@ impl Screen {
                 break;
             }
 
+            let mut temp = line.clone();
+            // add completition percentage
+            if show_completion {
+                if index as i32 == self.curr_top {
+                    temp.pop();
+                    let length = temp.chars().collect::<Vec<_>>().len();
+                    temp.push_str(
+                        " ".repeat((self.maxx - length as i32 - 5) as usize)
+                            .as_str(),
+                    );
+                    let mut percentage = String::new();
+                    let mut percentage_val =
+                        ((self.curr_bot as f32 / self.doc.len() as f32)
+                            * 100.00) as i32;
+                    if percentage_val > 100 {
+                        percentage_val = 100;
+                    }
+
+                    percentage.push_str(
+                        format!("{:0.3}", percentage_val.to_string()).as_str(),
+                    );
+                    temp.push_str(percentage.as_str());
+                    temp.push_str("%\n");
+                }
+            }
+            // color title
             if index == 1 {
                 attron(A_BOLD);
                 attron(COLOR_PAIR(1));
@@ -179,7 +205,7 @@ impl Screen {
                 attroff(COLOR_PAIR(1));
                 attroff(A_BOLD);
             } else {
-                addstr(line.as_str());
+                addstr(temp.as_str());
             }
         }
     }
@@ -196,7 +222,7 @@ impl Screen {
         for word in x.split(' ') {
             length += word.len() + 1;
             if length >= line_len as usize {
-                result.push_str(" ".repeat(padding as usize).as_str());
+                // result.push_str(" ".repeat(padding as usize).as_str());
                 result.push_str("\n");
                 vec.push(result);
                 result = "".to_string();
@@ -209,7 +235,7 @@ impl Screen {
                 result.push_str(" ");
             }
         }
-        result.push_str(" ".repeat(padding as usize).as_str());
+        // result.push_str(" ".repeat(padding as usize).as_str());
         result.push_str("\n");
         vec.push(result);
         vec.push("\n".to_string());
@@ -343,7 +369,7 @@ impl Screen {
         let x = 2;
         let mut y = 3;
 
-        self.draw();
+        self.draw(false);
         wmove(stdscr(), y, x);
         wrefresh(stdscr());
 
@@ -360,7 +386,7 @@ impl Screen {
                     if y as i32 == self.maxy - 1 {
                         clear();
                         self.scroll(1);
-                        self.draw();
+                        self.draw(false);
                         wmove(stdscr(), y, x);
                         wrefresh(stdscr());
                     }
@@ -377,7 +403,7 @@ impl Screen {
                     if y as i32 == 1 {
                         clear();
                         self.scroll(-1);
-                        self.draw();
+                        self.draw(false);
                         wmove(stdscr(), y, x);
                         wrefresh(stdscr());
                     } else {
@@ -394,7 +420,7 @@ impl Screen {
                     self.curr_top = 0;
                     (result, chapter_urls) = self.make_welcome_screen();
                     clear();
-                    self.draw();
+                    self.draw(false);
                     wmove(stdscr(), y, x);
                     wrefresh(stdscr());
                     curs_set(CURSOR_VISIBILITY::CURSOR_VISIBLE);
@@ -432,7 +458,7 @@ impl Screen {
                         if is_novel_found {
                             (result, chapter_urls) = self.make_welcome_screen();
                             clear();
-                            self.draw();
+                            self.draw(false);
                             wmove(stdscr(), y, x);
                             wrefresh(stdscr());
                             curs_set(CURSOR_VISIBILITY::CURSOR_VISIBLE);
@@ -458,7 +484,7 @@ impl Screen {
         clear();
         noecho();
         keypad(stdscr(), false);
-        self.draw();
+        self.draw(false);
         wmove(stdscr(), y, x);
         wrefresh(stdscr());
 
@@ -506,7 +532,7 @@ impl Screen {
         clear();
         noecho();
         keypad(stdscr(), true);
-        self.draw();
+        self.draw(false);
         wmove(stdscr(), 4, 2);
         wrefresh(stdscr());
         ch = getch();
@@ -523,7 +549,7 @@ impl Screen {
                     if y as i32 == self.maxy {
                         clear();
                         self.scroll(1);
-                        self.draw();
+                        self.draw(false);
                         wmove(stdscr(), y, 2);
                         wrefresh(stdscr());
                     } else if y == 3 + search_result.len() as i32 {
@@ -539,7 +565,7 @@ impl Screen {
                     if y as i32 == 1 {
                         clear();
                         self.scroll(-1);
-                        self.draw();
+                        self.draw(false);
                         wmove(stdscr(), y, 2);
                         wrefresh(stdscr());
                     } else {
