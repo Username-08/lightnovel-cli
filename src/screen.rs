@@ -283,15 +283,16 @@ impl Screen {
             result.push(title);
         }
 
-        let empty_vec: Vec<&str> = vec![];
         let selector = Selector::parse(r#"p"#).unwrap();
         for element in article.select(&selector) {
-            let content = element.text().collect::<Vec<_>>();
-            if content == empty_vec {
-                continue;
-            }
-            let line = content[0].to_string().trim().to_string();
-            if line == "" {
+            let line = element
+                .text()
+                .collect::<Vec<&str>>()
+                .join("")
+                .trim()
+                .to_string();
+
+            if line.is_empty() {
                 continue;
             }
             result.push(line);
