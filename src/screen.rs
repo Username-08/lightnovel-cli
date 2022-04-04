@@ -7,14 +7,14 @@ use std::{
 use ncurses::*;
 
 pub struct Screen {
-    raw_doc: Vec<String>,
-    doc: Vec<String>,
-    maxx: i32,
-    maxy: i32,
-    curr_bot: i32,
-    curr_top: i32,
+    pub raw_doc: Vec<String>,
+    pub doc: Vec<String>,
+    pub maxx: i32,
+    pub maxy: i32,
+    pub curr_bot: i32,
+    pub curr_top: i32,
     pub url: String,
-    path: String,
+    pub path: String,
 }
 
 impl Screen {
@@ -246,6 +246,9 @@ impl Screen {
         let mut result: Vec<String> = Vec::new();
         result.push("\n".to_string());
         for line in &self.raw_doc {
+            if line.len() < 1 {
+                continue;
+            }
             let parsed_line = self.add_padding(line.clone());
             for x in parsed_line {
                 result.push(x);
@@ -464,6 +467,12 @@ impl Screen {
                             curs_set(CURSOR_VISIBILITY::CURSOR_VISIBLE);
                         }
                     }
+                    ch = getch();
+                }
+                97 => {
+                    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
+                    clear();
+                    self.parse_epub_from_path();
                     ch = getch();
                 }
                 _ => {

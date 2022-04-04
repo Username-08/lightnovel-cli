@@ -1,4 +1,6 @@
+mod epub;
 mod screen;
+mod ueberzug;
 
 use screen::Screen;
 use std::env;

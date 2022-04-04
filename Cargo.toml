@@ -6,6 +6,8 @@ version = "0.1.0"
 [dependencies]
 scraper = "0.12.0"
 ncurses = {git = "https://github.com/jeaye/ncurses-rs", features=["wide"]}
+base64 = "0.13.0"
+epub = "1.2.3"
 
 [dependencies.reqwest]
 features = ["json"]
