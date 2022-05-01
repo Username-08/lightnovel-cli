@@ -5,9 +5,13 @@ version = "0.1.0"
 
 [dependencies]
 scraper = "0.12.0"
-ncurses = {git = "https://github.com/jeaye/ncurses-rs", features=["wide"]}
+ncurses = "5.101.0"
 base64 = "0.13.0"
 epub = "1.2.3"
+html2text = {git = "https://github.com/Username-08/rust-html2text"}
+image = "0.24.1"
+tempfile = "3"
+libc = "0.2.123"
 
 [dependencies.reqwest]
 features = ["json"]

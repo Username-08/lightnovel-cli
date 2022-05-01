@@ -199,11 +199,11 @@ impl Screen {
             }
             // color title
             if index == 1 {
-                attron(A_BOLD);
+                attron(A_BOLD());
                 attron(COLOR_PAIR(1));
                 addstr(line.as_str());
                 attroff(COLOR_PAIR(1));
-                attroff(A_BOLD);
+                attroff(A_BOLD());
             } else {
                 addstr(temp.as_str());
             }
@@ -472,7 +472,7 @@ impl Screen {
                 97 => {
                     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
                     clear();
-                    self.parse_epub_from_path();
+                    crate::epub::Epub::new(self.maxx, self.maxy, String::new());
                     ch = getch();
                 }
                 _ => {
