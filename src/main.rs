@@ -1,4 +1,5 @@
-mod epub;
+mod epubs;
+mod renderer;
 mod screen;
 mod ueberzug;
 
@@ -11,6 +12,10 @@ use std::path::Path;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // create config directory if it doesnt exist
     let path = create_config_dir();
+    // let (x, y) = renderer::get_term_dim();
+    // let (a, b) = renderer::get_screen_size();
+    // println!("{}, {}", x, y);
+    // println!("{}, {}", a, b);
 
     Screen::new(path).await?;
 

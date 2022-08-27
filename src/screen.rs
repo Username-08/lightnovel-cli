@@ -472,7 +472,11 @@ impl Screen {
                 97 => {
                     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
                     clear();
-                    crate::epub::Epub::new(self.maxx, self.maxy, String::new());
+                    crate::epubs::Epub::new(
+                        self.maxx,
+                        self.maxy,
+                        String::new(),
+                    );
                     ch = getch();
                 }
                 _ => {
