@@ -10,13 +10,14 @@ use ncurses::*;
 use scraper::{Html, Selector};
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read, Write};
+use std::path::Path;
 use tempfile;
 
 pub struct Image {
     image_path: String,
     rows: u16,
     line_no: usize,
-    col_no: usize,
+    // col_no: usize,
     ue_conf: ueberzug::UeConf,
 }
 
@@ -48,6 +49,8 @@ impl Epub {
             .into_lines();
 
         let temp_dir = tempfile::tempdir().unwrap();
+        addstr(temp_dir.path().to_str().unwrap());
+        getch();
 
         let drawer = ueberzug::Ueberzug::new();
 
@@ -71,7 +74,14 @@ impl Epub {
     pub fn display_chapter(&mut self) {
         clear();
         endwin();
-        for line in &self.chapter {
+        for (line_no, line) in self.chapter.iter().enumerate() {
+            // dont render lines out of screen
+            if (line_no as i32) < self.curr_top {
+                continue;
+            } else if (line_no as i32) > self.curr_bot {
+                continue;
+            }
+
             let is_head;
             let mut tagged_strings = line.tagged_strings();
             // check if head tag
@@ -85,51 +95,85 @@ impl Epub {
             } else {
                 is_head = false;
             }
-            for ann in tagged_strings {
-                // println!("{:?}", ann);
-                self.handle_annotation(ann, is_head);
-            }
-            addstr("\n");
-        }
-    }
 
-    fn handle_annotation(
-        &self,
-        ann: &TaggedString<Vec<RichAnnotation>>,
-        is_head: bool,
-    ) {
-        let mut attributes = vec![];
-        let mut bold: bool = false;
-        // TODO: loop through tags and apply each one
-        for tag in &ann.tag {
-            match tag {
-                RichAnnotation::Strong => {
-                    attributes.push(A_BOLD());
-                    bold = true;
-                }
-                RichAnnotation::Emphasis => attributes.push(A_ITALIC()),
-                RichAnnotation::Strikeout => attributes.push(A_HORIZONTAL()),
-                _ => {
-                    if is_head {
-                        attributes.push(A_BOLD());
+            for ann in tagged_strings {
+                let mut attributes = vec![];
+                let mut ann_str = ann.s.as_str();
+
+                for tag in &ann.tag {
+                    match tag {
+                        RichAnnotation::Strong => {
+                            attributes.push(A_BOLD());
+                            ann_str = ann_str.trim_matches('*');
+                        }
+                        RichAnnotation::Emphasis => attributes.push(A_ITALIC()),
+                        RichAnnotation::Strikeout => {
+                            let ls = ann_str.len();
+                            ann_str = &ann_str[1..ls - 2];
+                        }
+                        RichAnnotation::Image => {
+                            let mut img_path = self.temp_dir.path().to_owned();
+                            let img_name =
+                                get_image_name_from_path(&ann_str.to_string());
+                            img_path = img_path.join(img_name);
+                            getch();
+
+                            // image has been added to temp dir
+                            if img_path.exists() {
+                                // check if image has already been created
+                                for image in self.image_list {
+                                    if image.line_no == line_no {
+                                        continue;
+                                    }
+                                }
+                                let img = self.create_image_from_path(
+                                    img_path.to_str().unwrap().to_string(),
+                                    line_no,
+                                    line_no,
+                                );
+                            } else {
+                                // copy image from epub to temp file
+                                let img_data =
+                                    match self.epub_doc.get_resource_by_path(
+                                        format!("OEBPS/{}", ann_str).as_str(),
+                                    ) {
+                                        Ok(data) => data,
+                                        Err(_) => panic!("Error reading Epub"),
+                                    };
+
+                                let mut fd = File::options()
+                                    .write(true)
+                                    .create(true)
+                                    .open(&img_path)
+                                    .unwrap();
+                                fd.write(&img_data[..]).unwrap();
+
+                                let img = self.create_image_from_path(
+                                    img_path.to_str().unwrap().to_string(),
+                                    line_no,
+                                    line_no,
+                                );
+                            }
+                        }
+                        _ => {
+                            if is_head {
+                                attributes.push(A_BOLD());
+                            }
+                        }
                     }
                 }
+
+                for attr in attributes.iter() {
+                    attron(attr.clone());
+                }
+
+                addstr(ann_str);
+
+                for attr in attributes {
+                    attroff(attr);
+                }
             }
-        }
-
-        for attr in attributes.iter() {
-            attron(attr.clone());
-        }
-
-        // remove asterisk
-        if bold {
-            addstr(ann.s.trim_matches('*'));
-        } else {
-            addstr(ann.s.as_str());
-        }
-
-        for attr in attributes {
-            attroff(attr);
+            addstr("\n");
         }
     }
 
@@ -141,7 +185,7 @@ impl Epub {
         &self,
         image_path: String,
         row_no: usize,
-        col_no: usize,
+        // col_no: usize,
         line_no: usize,
     ) -> Image {
         let (_, y) = image::image_dimensions(&image_path).unwrap();
@@ -161,7 +205,7 @@ impl Epub {
             image_path,
             rows,
             line_no,
-            col_no,
+            // col_no,
             ue_conf,
         }
     }
