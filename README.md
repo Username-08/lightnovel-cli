@@ -48,6 +48,7 @@ Make sure you have these installed before compiling from source
 ```sh
 rust
 ncurses
+openssl
 ```
 
 ### Compiling
@@ -55,7 +56,7 @@ ncurses
 ```sh
 git clone https://github.com/Username-08/lightnovel-cli.git
 cd lightnovel-cli
-cargo build
+cargo build --release
 ```
 
 # Uninstalling
